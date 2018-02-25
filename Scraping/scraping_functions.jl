@@ -66,7 +66,7 @@ end
 function giveme_comissions(element::Array{Gumbo.HTMLNode,1})
     if length(element) != 0
         del_tab = r"\t.*"
-        comi = Array(Any,length(element))
+        comi = Array{Any}(length(element))
         for i in eachindex(element)
             text = nodeText(element[i])
             if match(del_tab,text) != nothing 
@@ -139,8 +139,8 @@ end
 function giveme_dates(element::Array{Gumbo.HTMLNode,1})    
     the_id = r"(?=d=)(.*)(?=&)"
     the_date = r"f=.*"
-    mid = Array(Int64,length(element))
-    mda = Array(String,length(element))
+    mid = Array{Int64}(length(element))
+    mda = Array{String}(length(element))
     for i in eachindex(element)
         str=element[i].attributes["href"]
         m_id=match(the_id,str)
@@ -152,7 +152,7 @@ function giveme_dates(element::Array{Gumbo.HTMLNode,1})
 end
 
 function giveme_attendance(element::Array{Gumbo.HTMLNode,1})
-    mas = Array(String,length(element))
+    mas = Array{String}(length(element))
     for i in eachindex(element)
         mas[i] = nodeText(element[i])
     end
@@ -194,7 +194,7 @@ end
 
 
 function giveme_the_vote(element::Array{Gumbo.HTMLNode,1})
-    the_vote = Array(String,length(element))
+    the_vote = Array{String}(length(element))
     for i in eachindex(element)
         if nodeText(element[i]) != "AUSENTECOMISIÓN OFICIAL"
             the_vote[i] = nodeText(element[i])
@@ -207,7 +207,7 @@ end
 
 function giveme_law_id(element::Array{Gumbo.HTMLNode,1})
     id_law = r"[0-9]{4}"
-    lid = Array(Int64,length(element))
+    lid = Array{Int64}(length(element))
     for i in eachindex(element)
         str = element[i].attributes["href"]
         l_id = match(id_law,str)
@@ -259,7 +259,7 @@ end
 
 function all_comission(vector::Array, information::String)
     information = uppercase(information)
-    coincidence = Array(Any,0)
+    coincidence = Array{Any}(0)
     for i in eachindex(vector)
         each_comission = which_comission(vector[i], information)
         if each_comission != nothing
