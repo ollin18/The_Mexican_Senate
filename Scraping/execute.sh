@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ./1_senators.sh > data/senators.csv
 awk 'BEGIN{FS="|"}{print$1"|"$5}' ./data/senators.csv > data/dic.csv
 awk 'BEGIN{FS="|"}{print$1"|"$2}' ./data/senators.csv > data/dict.csv
