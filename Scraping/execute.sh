@@ -1,6 +1,6 @@
 ./1_senators.sh > data/senators.csv
 awk 'BEGIN{FS="|"}{print$1"|"$5}' ./data/senators.csv > data/dic.csv
-awk 'BEGIN{FS="|"}{print$1"|"$5}' ./data/senators.csv > data/dic.csv
+awk 'BEGIN{FS="|"}{print$1"|"$2}' ./data/senators.csv > data/dict.csv
 ./2_attendance.sh > data/attendance.csv
 ./3_comissions.sh > data/comissions.csv
 ./4_votes.sh > data/votes.csv && \

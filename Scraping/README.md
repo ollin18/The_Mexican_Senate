@@ -1,6 +1,3 @@
-In order to get the data as we want it the following is have to be done:
-./1_senators.sh > ../data/senators.csv
-./2_attendance.sh > ../data/attendance.csv
-./3_comissions.sh > ../data/comissions.csv
-./4_votes.sh > ../data/votes.csv
-./5_edictums.sh > ../data/edictums.csv
+# This is where the scraping happens.
+All we have to do is run the execute.sh file and it'll download everything we need. It could take a while depending on several things such as the number of procs in your computer, the internet connection, the senate's website traffic and things like that.
+## Everything is downloaded in parallel thanks to Julia's power.
