@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-cat ../data/senators.csv | awk 'BEGIN{FS="|"}{print$1"|"$6}' > dict.csv
+cat data/senators.csv | awk 'BEGIN{FS="|"}{print$1"|"$6}' > data/dict.csv
 
 procs=`grep -c ^processor /proc/cpuinfo`
 

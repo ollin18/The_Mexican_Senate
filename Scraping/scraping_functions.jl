@@ -69,7 +69,7 @@ function giveme_comissions(element::Array{Gumbo.HTMLNode,1})
         comi = Array{Any}(length(element))
         for i in eachindex(element)
             text = nodeText(element[i])
-            if match(del_tab,text) != nothing 
+            if match(del_tab,text) != nothing
                 no_tab = match(del_tab,text)
                 comi[i]=no_tab.match[2:end]
             else
@@ -136,8 +136,8 @@ function get_info_at(id::Int64)
     h
 end
 
-function giveme_dates(element::Array{Gumbo.HTMLNode,1})    
-    the_id = r"(?=d=)(.*)(?=&)"
+function giveme_dates(element::Array{Gumbo.HTMLNode,1})
+    the_id = r"(?=id=)(.*)(?=&)"
     the_date = r"f=.*"
     mid = Array{Int64}(length(element))
     mda = Array{String}(length(element))
@@ -145,7 +145,7 @@ function giveme_dates(element::Array{Gumbo.HTMLNode,1})
         str=element[i].attributes["href"]
         m_id=match(the_id,str)
         m_date=match(the_date,str)
-        mid[i] = parse(Int64,m_id.match[3:end])
+        mid[i] = parse(Int64,m_id.match[4:end])
         mda[i] = m_date.match[3:end]
     end
     mid, mda
@@ -160,10 +160,11 @@ function giveme_attendance(element::Array{Gumbo.HTMLNode,1})
 end
 
 function senators_attendance(id::Int64)
-    the_array = readdlm("dic.csv",'|',Int64)
+    the_array = readdlm("data/dic.csv",'|',Int64)
     the_dic = Dict(the_array[i,2]=>the_array[i,1] for i in 1:size(the_array)[1])
     h = get_info_at(id)
     ref = matchall(Selector("tr td div a[href^='index.php?watch=35']"),h.root)
+    ref = ref[2:end]
     att = matchall(Selector("tr td div strong"),h.root)[7:end]
     mid, mda = giveme_dates(ref)
     mas = giveme_attendance(att)
@@ -207,6 +208,7 @@ end
 
 function giveme_law_id(element::Array{Gumbo.HTMLNode,1})
     id_law = r"[0-9]{4}"
+    element = element[2:end]
     lid = Array{Int64}(length(element))
     for i in eachindex(element)
         str = element[i].attributes["href"]
@@ -218,7 +220,7 @@ function giveme_law_id(element::Array{Gumbo.HTMLNode,1})
 end
 
 function senators_votes(id::Int64)
-    the_array = readdlm("dic.csv",'|',Int64)
+    the_array = readdlm("data/dic.csv",'|',Int64)
     the_dic = Dict(the_array[i,2]=>the_array[i,1] for i in 1:size(the_array)[1])
     h = get_info_vote(id)
     votes = matchall(Selector("td[width='10%'] div[align ='center']"),h.root)
