@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ./create_csv.sh
-./create_db.sh
+#./create_db.sh
 
 docker build --tag senate_neo:0.1 --tag senate_neo:latest .
 
