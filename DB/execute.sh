@@ -3,7 +3,7 @@
 #./create_csv.sh
 #./create_db.sh
 
-docker build --tag senate_neo:0.1 --tag senate_neo:latest .
+#docker build --tag senate_neo:0.1 --tag senate_neo:latest .
 
 docker run \
     --publish=7474:7474 --publish=7473:7473 \
