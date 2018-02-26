@@ -21,15 +21,15 @@ setting() {
 }
 
 if [ "$1" == "neo4j" ]; then
-    setting "dbms.tx_log.rotation.retention_policy" "${NEO4J_dbms_txLog_rotation_retentionPolicy:-100M size}"
-    setting "dbms.memory.pagecache.size" "${NEO4J_dbms_memory_pagecache_size:-512M}"
+    setting "dbms.tx_log.rotation.retention_policy" "${NEO4J_dbms_txLog_rotation_retentionPolicy:-1000M size}"
+    setting "dbms.memory.pagecache.size" "${NEO4J_dbms_memory_pagecache_size:-16G}"
     setting "wrapper.java.additional=-Dneo4j.ext.udc.source" "${NEO4J_UDC_SOURCE:-docker}" neo4j-wrapper.conf
-    setting "dbms.memory.heap.initial_size" "${NEO4J_dbms_memory_heap_maxSize:-512m}" neo4j-wrapper.conf
-    setting "dbms.memory.heap.max_size" "${NEO4J_dbms_memory_heap_maxSize:-2048m}" neo4j-wrapper.conf
+    setting "dbms.memory.heap.initial_size" "${NEO4J_dbms_memory_heap_maxSize:-4G}" neo4j-wrapper.conf
+    setting "dbms.memory.heap.max_size" "${NEO4J_dbms_memory_heap_maxSize:-16G}" neo4j-wrapper.conf
     setting "dbms.unmanaged_extension_classes" "${NEO4J_dbms_unmanagedExtensionClasses:-}"
     setting "dbms.allow_format_migration" "${NEO4J_dbms_allowFormatMigration:-}"
     setting "dbms.security.procedures.unrestricted" "${NEO4J_dbms_security_procedures_unrestricted:-apoc.*}"
-    setting "dbms.active_database" "${NEO4J_dbms_active_database:-nominal.db}"
+    setting "dbms.active_database" "${NEO4J_dbms_active_database:-senate.db}"
 
     if [ "${NEO4J_AUTH:-}" == "none" ]; then
         setting "dbms.security.auth_enabled" "false"
@@ -40,15 +40,15 @@ if [ "$1" == "neo4j" ]; then
             exit 1
         fi
 
-        setting "dbms.connector.http.listen_address" "127.0.0.1:7475"
-        setting "dbms.connector.https.listen_address" "127.0.0.1:7472"
-        setting "dbms.connector.bolt.listen_address" "127.0.0.1:7476"
+        setting "dbms.connector.http.listen_address" "127.0.0.1:7474"
+        setting "dbms.connector.https.listen_address" "127.0.0.1:7473"
+        setting "dbms.connector.bolt.listen_address" "127.0.0.1:7687"
         bin/neo4j start || \
             (cat logs/neo4j.log && echo "Neo4j failed to start" && exit 1)
 
         end="$((SECONDS+100))"
         while true; do
-            http_code="$(curl --silent --write-out %{http_code} --user "neo4j:${password}" --output /dev/null http://localhost:7475/db/data/ || true)"
+            http_code="$(curl --silent --write-out %{http_code} --user "neo4j:${password}" --output /dev/null http://localhost:7474/db/data/ || true)"
 
             if [[ "${http_code}" = "200" ]]; then
                 break;
@@ -58,7 +58,7 @@ if [ "$1" == "neo4j" ]; then
                 curl --fail --silent --show-error --user neo4j:neo4j \
                      --data '{"password": "'"${password}"'"}' \
                      --header 'Content-Type: application/json' \
-                     http://localhost:7475/user/neo4j/password
+                     http://localhost:7474/user/neo4j/password
                 break;
             fi
 
@@ -75,9 +75,9 @@ if [ "$1" == "neo4j" ]; then
         exit 1
     fi
 
-    setting "dbms.connector.http.listen_address" "0.0.0.0:7475"
-    setting "dbms.connector.https.listen_address" "0.0.0.0:7472"
-    setting "dbms.connector.bolt.listen_address" "0.0.0.0:7476"
+    setting "dbms.connector.http.listen_address" "0.0.0.0:7474"
+    setting "dbms.connector.https.listen_address" "0.0.0.0:7473"
+    setting "dbms.connector.bolt.listen_address" "0.0.0.0:7687"
     setting "dbms.mode" "${NEO4J_dbms_mode:-}"
     setting "ha.server_id" "${NEO4J_ha_serverId:-}"
     setting "ha.host.data" "${NEO4J_ha_host_data:-}"
@@ -116,4 +116,4 @@ elif [ "$1" == "dump-config" ]; then
     fi
 else
     exec "$@"
-fi 
+fi
