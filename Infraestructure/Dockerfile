@@ -1,0 +1,13 @@
+FROM julia
+
+RUN apt update && apt-get install -y build-essential
+RUN julia -e 'Pkg.add("Cascadia")'
+RUN julia -e 'Pkg.build("Gumbo")'
+RUN apt install -y unzip
+RUN julia -e 'Pkg.add("Requests")'
+RUN julia -e 'using Cascadia'
+RUN julia -e 'using Requests'
+
+COPY $(pwd)/../Scraping/src/ src/
+
+CMD ["src/execute.sh"]
