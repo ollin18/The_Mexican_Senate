@@ -8,6 +8,6 @@
 @everywhere the_comissions = readdlm("data/comissions_noid.csv",'|')
 @everywhere the_comissions = pmap(uppercase,the_comissions)
 
-@everywhere include("scraping_functions.jl")
+@everywhere include("/src/scraping_functions.jl")
 
 pmap(giveme_edictum_with_info,edictum)

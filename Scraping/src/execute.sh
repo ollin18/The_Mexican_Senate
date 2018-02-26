@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
-./1_senators.sh > data/senators.csv
-awk 'BEGIN{FS="|"}{print$1"|"$5}' ./data/senators.csv > data/dic.csv
-awk 'BEGIN{FS="|"}{print$1"|"$2}' ./data/senators.csv > data/dict.csv
+export DATA=$(pwd)/data/
 
-./2_attendance.sh > data/attendance.csv
+src/1_senators.sh > $DATA/senators.csv
+awk 'BEGIN{FS="|"}{print$1"|"$5}' $DATA/senators.csv > $DATA/dic.csv
+awk 'BEGIN{FS="|"}{print$1"|"$2}' $DATA/senators.csv > $DATA/dict.csv
 
-./3_comissions.sh > data/comissions.csv
+src/2_attendance.sh > $DATA/attendance.csv
 
-./4_votes.sh > data/votes.csv && \
-awk 'BEGIN{FS="|"}{print$2}' ./data/votes.csv | sort -u > data/edictum.csv
-awk 'BEGIN {FS="|"}{print $2}' ./data/comissions.csv | sort -u \
-> data/comissions_noid.csv && echo NONE >> data/comissions_noid.csv
+src/3_comissions.sh > $DATA/comissions.csv
 
-./5_edictums.sh > data/edictums.csv
+src/4_votes.sh > $DATA/votes.csv && \
+awk 'BEGIN{FS="|"}{print$2}' $DATA/votes.csv | sort -u > $DATA/edictum.csv
+awk 'BEGIN {FS="|"}{print $2}' $DATA/comissions.csv | sort -u \
+> $DATA/comissions_noid.csv && echo NONE >> $DATA/comissions_noid.csv
+
+src/5_edictums.sh > $DATA/edictums.csv

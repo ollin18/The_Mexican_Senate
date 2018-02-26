@@ -2,7 +2,7 @@
 
 procs=`grep -c ^processor /proc/cpuinfo`
 
-julia -p $procs get_votes.jl | egrep -o "[0-9]{3}.*"
+julia -p $procs src/get_votes.jl | egrep -o "[0-9]{3}.*"
 
 cat data/votes.csv | awk 'BEGIN{FS="|"}{print$2}' | sort -u > data/edictum.csv
 
