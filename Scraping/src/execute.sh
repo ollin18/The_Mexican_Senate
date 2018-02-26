@@ -10,6 +10,6 @@ awk 'BEGIN{FS="|"}{print$1"|"$2}' ./data/senators.csv > data/dict.csv
 ./4_votes.sh > data/votes.csv && \
 awk 'BEGIN{FS="|"}{print$2}' ./data/votes.csv | sort -u > data/edictum.csv
 awk 'BEGIN {FS="|"}{print $2}' ./data/comissions.csv | sort -u \
-> data/comissions_noid.csv && echo NONE >> comissions_noid.csv
+> data/comissions_noid.csv && echo NONE >> data/comissions_noid.csv
 
 ./5_edictums.sh > data/edictums.csv
