@@ -8,10 +8,10 @@ ADD http://dist.neo4j.org/neo4j-community-3.3.0-unix.tar.gz /var/lib
 RUN tar -xzvf /var/lib/neo4j-community-3.3.0-unix.tar.gz
 RUN mv neo4j-community-3.3.0 /var/lib/neo4j
 
-ADD create_db.sh create_db.sh
+ADD $(pwd)/../DB/create_db.sh create_db.sh
 
-COPY nodes/ nodes/
-COPY edges/ edges/
+COPY $(pwd)/../DB/nodes/ nodes/
+COPY $(pwd)/../DB/edges/ edges/
 RUN bash create_db.sh
 
 WORKDIR /var/lib/neo4j
