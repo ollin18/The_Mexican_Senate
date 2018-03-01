@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+    scraper:
+        build:
+            dockerfile: Dockerfile.scrap
+            context: ../Scraping
+        image: ollin18/scraper:0.1
+
+    neo4j:
+        build:
+            dockerfile: Dockerfile.db
+            context: ../DB
+        image: ollin18/senate_neo:0.1
