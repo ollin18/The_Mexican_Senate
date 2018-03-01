@@ -38,4 +38,3 @@ EXPOSE 7475 7476 7472
 ENTRYPOINT ["/tmp/docker-entrypoint.sh"]
 
 CMD ["neo4j"]
-
