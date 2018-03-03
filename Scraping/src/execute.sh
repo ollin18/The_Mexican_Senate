@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
+
 export DATA=$(pwd)/data/
+#export DATA=/data/
 
 src/1_senators.sh > $DATA/senators.csv
 awk 'BEGIN{FS="|"}{print$1"|"$5}' $DATA/senators.csv > $DATA/dic.csv
