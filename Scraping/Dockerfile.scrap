@@ -10,4 +10,4 @@ RUN julia -e 'using Requests'
 
 COPY src/ src/
 
-CMD ["src/execute.sh"]
+CMD ["/src/execute.sh"]
