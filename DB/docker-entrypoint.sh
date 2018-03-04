@@ -106,7 +106,7 @@ if [ "$1" == "neo4j" ]; then
         setting "dbms.directories.import" "/import" neo4j.conf
     fi
 
-    exec bin/neo4j console
+    exec /var/lib/neo4j/create_and_run.sh
 elif [ "$1" == "dump-config" ]; then
     if [ -d /conf ]; then
         cp --recursive conf/* /conf
