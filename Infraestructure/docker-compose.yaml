@@ -1,4 +1,4 @@
-version: "3"
+version: "3.2"
 
 services:
     neo4j:
@@ -7,14 +7,18 @@ services:
             context: ../DB
         image: ollin18/senate_neo:0.1
         container_name: senate_db
-        depends_on: scraper
+        depends_on:
+            - scraper
         environment:
             - NEO4J_AUTH=none
         ports:
             - "7474:7474"
             - "7687:7687"
-        networks:
-            - senate_net
+        volumes:
+            - ../DB/nodes:/nodes
+            - ../DB/edges:/edges
+        #networks:
+            #- senate_net
 
     scraper:
         build:
@@ -24,11 +28,19 @@ services:
         container_name: senate_scrap
         volumes:
             - type: volume
-            - source: data
+              source: data
               target: /data
-        networks:
-            - senate_net
+              volume:
+                  nocopy: false
+        command: ["src/execute.sh"]
+        #networks:
+            #- senate_net
 
-networks:
-    senate_net:
-        external: true
+#networks:
+    #senate_net:
+        #external: true
+
+volumes:
+    data:
+    nodes:
+    edges:
