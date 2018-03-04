@@ -9,10 +9,7 @@ RUN tar -xzvf /var/lib/neo4j-community-3.3.0-unix.tar.gz
 RUN mv neo4j-community-3.3.0 /var/lib/neo4j
 
 ADD create_db.sh create_db.sh
-
-COPY nodes/ nodes/
-COPY edges/ edges/
-RUN bash create_db.sh
+ADD create_and_run.sh /var/lib/neo4j/create_and_run.sh
 
 WORKDIR /var/lib/neo4j
 
@@ -33,7 +30,7 @@ RUN mkdir graphml
 VOLUME /data
 
 COPY docker-entrypoint.sh /tmp/docker-entrypoint.sh
-EXPOSE 7475 7476 7472
+EXPOSE 7474 7473 7687
 
 ENTRYPOINT ["/tmp/docker-entrypoint.sh"]
 
