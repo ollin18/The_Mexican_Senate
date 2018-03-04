@@ -15,8 +15,6 @@ rm $NODEL/day_tmp.csv
 
 cp $DATA/edictum.csv $NODEL/edictum.csv
 
-echo "NONE" >> $NODEL/comissions.csv
-
 cp $DATA/comissions.csv $EDGEL/comissions.csv
 
 cat $DATA/attendance.csv | awk 'BEGIN{FS="|"}{print$1"|"$2"|"$4"|ATTENDED"}' > $EDGEL/attendance.csv
