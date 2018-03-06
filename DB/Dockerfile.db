@@ -1,8 +1,8 @@
- from ollin18/senate_base_ubuntu
+from ollin18/senate_base_ubuntu
 
 MAINTAINER Ollin Demian Langle Chimal <ollin.langle@ciencias.unam.mx>
 
-ENV REFRESHED_AT 2017-11-26
+ENV REFRESHED_AT 2018-03-05
 
 ADD http://dist.neo4j.org/neo4j-community-3.3.0-unix.tar.gz /var/lib
 RUN tar -xzvf /var/lib/neo4j-community-3.3.0-unix.tar.gz

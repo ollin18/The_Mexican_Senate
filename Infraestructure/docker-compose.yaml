@@ -17,6 +17,7 @@ services:
         volumes:
             - ../DB/nodes:/nodes
             - ../DB/edges:/edges
+            - ../Scraping/data:/datasc
 
     scraper:
         build:

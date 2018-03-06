@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-export DATA=../Scraping/data
+export DATA=/datasc
 export NODEL=./nodes/list
 export EDGEL=./edges/list
 
