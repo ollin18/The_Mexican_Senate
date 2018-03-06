@@ -17,8 +17,6 @@ services:
         volumes:
             - ../DB/nodes:/nodes
             - ../DB/edges:/edges
-        #networks:
-            #- senate_net
 
     scraper:
         build:
@@ -27,18 +25,8 @@ services:
         image: ollin18/scraper:0.1
         container_name: senate_scrap
         volumes:
-            - type: volume
-              source: data
-              target: /data
-              volume:
-                  nocopy: false
+            - ../Scraping/data:/data
         command: ["src/execute.sh"]
-        #networks:
-            #- senate_net
-
-#networks:
-    #senate_net:
-        #external: true
 
 volumes:
     data:
