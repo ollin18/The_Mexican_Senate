@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-while [ ! -e /edges/list/edictums.csv ]
+while [ ! -e /datasc/edictums.csv ]
 do
     sleep 180
 done

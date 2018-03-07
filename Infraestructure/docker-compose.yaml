@@ -15,8 +15,10 @@ services:
             - "7474:7474"
             - "7687:7687"
         volumes:
-            - ../DB/nodes:/nodes
-            - ../DB/edges:/edges
+            - ../DB/nodes/list:/nodes/list
+            - ../DB/edges/list:/edges/list
+            - ../DB/nodes/headers:/nodes/headers
+            - ../DB/edges/headers:/edges/headers
             - ../Scraping/data:/datasc
 
     scraper:
@@ -31,5 +33,6 @@ services:
 
 volumes:
     data:
+    datasc:
     nodes:
     edges:
