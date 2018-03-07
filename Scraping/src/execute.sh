@@ -17,3 +17,7 @@ awk 'BEGIN {FS="|"}{print $2}' $DATA/comissions.csv | sort -u \
 > $DATA/comissions_noid.csv && echo NONE >> $DATA/comissions_noid.csv
 
 src/5_edictums.sh > $DATA/edictums.csv
+
+sleep 120
+
+touch $DATA/scraping.done
