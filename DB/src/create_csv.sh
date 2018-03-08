@@ -6,7 +6,7 @@ export EDGEH=/edges/headers
 export NODEL=/nodes/list
 export EDGEL=/edges/list
 
-cat $DATA/senators.csv | awk 'BEGIN{FS="|"}{print$1"|"$2"|"$3"|"$4"|"$6"|"$7}' > $NODEL/senators.csv
+cat $DATA/senators.csv | awk 'BEGIN{FS="|"}{print$1"|"$2"|"$3"|"$4"|"$5"|"$6}' > $NODEL/senators.csv
 
 cp $DATA/comissions_noid.csv $NODEL/comissions.csv
 
