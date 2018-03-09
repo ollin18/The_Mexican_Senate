@@ -3,7 +3,6 @@
 using OhMyREPL
 using Plots
 pyplot()
-#gr()
 
 directorio_data = "../data/"
 directorio_adj = directorio_data*"adj/"

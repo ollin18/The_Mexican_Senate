@@ -51,7 +51,6 @@ izquierdas = vcat(prd_pt,los_partidos[4])
 pan_izquierdas = vcat(izquierdas,los_partidos[3])
 derechas = vcat(pri_verde,los_partidos[3])
 coaliciones = [pri_verde,prd_pt,izquierdas,derechas,pan_izquierdas]
-#trimestres = [primertrimestre,segundotrimestre,tercertrimestre,cuartotrimestre]
 str_trimestre = ["primertrimestre","segundotrimestre","tercertrimestre","cuartotrimestre"]
 
 for mes ∈ 1:23

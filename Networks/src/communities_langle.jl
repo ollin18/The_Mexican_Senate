@@ -7,7 +7,7 @@ using GraphPlot
 using Colors
 using Compose
 using Clustering
-using GraphIO
+using RCall
 include("utils.jl")
 include("matrices.jl")
 
@@ -25,7 +25,7 @@ directorio_pdf = "../figs/pdf/"
 directorio_png = "../figs/png/"
 isdir(directorio_data) || mkdir(directorio_data)
 isdir(directorio_adj) || mkdir(directorio_adj)
-isdir(directorio_adj*"treshold/") || mkdir(directorio_adj*"treshold/")
+isdir(directorio_adj*"threshold/") || mkdir(directorio_adj*"threshold/")
 isdir(directorio_adj*"weighted/") || mkdir(directorio_adj*"weighted/")
 isdir(directorio_clu) || mkdir(directorio_clu)
 isdir(directorio_ne) || mkdir(directorio_ne)
@@ -41,9 +41,6 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(lubridate)
-library(e1071)
-library(factoextra)
-library(NbClust)
 
 graph = startGraph('http://localhost:7474/db/data/')
 
@@ -52,7 +49,7 @@ MATCH (s:Senator), (e:edictum)
 OPTIONAL MATCH (s)-[v:VOTE]->(e)
 WITH s,v,e
 MATCH (d:day)-[]->(e)
-RETURN e.edictumId as Edicto, s.senator as Senador, v.voted as Votó, d.comission as día
+RETURN e.edictumId as Edicto, s.senator as Senador, v.voted as Votó, d.day as día
 ORDER BY día DESC
 '
 
@@ -159,11 +156,17 @@ for año ∈ 2012:2018
         if ne(g)>0
             NBM, edgeidmap = ollin_matrix(g,matriz_copiada)
             grad = [force(g,i,matriz_copiada) for i in 1:128]
-            treshold = 2*sqrt(mean(grad)/mean(grad.-1)/mean(grad))
+            threshold = 4*sqrt(mean(grad)/mean(grad.-1)/mean(grad))
 
             R = NBM
-            valores, vectores = eigens(R,treshold)
-            cuantos, index = num_com(valores,treshold)
+            valores, vectores = eigens(R,threshold)
+            cuantos, index = num_com(valores,threshold)
+            if cuantos < 2
+                threshold = 3*sqrt(mean(grad)/mean(grad.-1)/mean(grad))
+                valores, vectores = eigens(R,threshold)
+                cuantos, index = num_com(valores,threshold)
+            end
+
             matriz_embedded = real(vectores[:,index])
             contraida = contraccion(g,index,matriz_embedded,edgeidmap)
             sign_switch = sum(x->sign(real(x)), contraida[:,1])

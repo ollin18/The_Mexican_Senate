@@ -4,7 +4,6 @@ using OhMyREPL
 using LightGraphs
 using Plots
 pyplot()
-plotlyjs()
 include("read_graph.jl")
 
 eigenvalores = @animate for mes ∈ 1:20

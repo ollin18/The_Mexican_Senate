@@ -6,7 +6,6 @@ using LightGraphs
 using GraphPlot
 using Colors
 using Compose
-using GraphIO
 include("utils.jl")
 
 global_clustering = Array{Float64}(0)
@@ -61,7 +60,7 @@ library(NbClust)
 """)
 
 reval("""
-graph = startGraph('http://localhost:7474/db/data/', username='neo4j', password='neo')""")
+graph = startGraph('http://localhost:7474/db/data/', username='neo4j')""")
 
 reval("""
 query = '
@@ -69,7 +68,7 @@ MATCH (s:Senator), (e:edictum)
 OPTIONAL MATCH (s)-[v:VOTE]->(e)
 WITH s,v,e
 MATCH (d:day)-[]->(e)
-RETURN e.edictumId as Edicto, s.senator as Senador, v.voted as Votó, d.comission as día
+RETURN e.edictumId as Edicto, s.senator as Senador, v.voted as Votó, d.day as día
 ORDER BY día DESC
 '
 
@@ -231,7 +230,6 @@ for año ∈ 2012:2018
             push!(maxk,maximok)
             membership = partidos_num
             nodecolor = [colorant"red",colorant"yellow",colorant"blue",colorant"violet",colorant"orange",colorant"green"]
-            #nodecolor = ["#fbb4ae","#ffffcc","#b3cde3","#decbe4","#fed9a6","#ccebc5"]
             nodefillc =  nodecolor[membership]
             draw(PDF(directorio_fig*"$año\/pdf\/"*String(str_trimestre[m])*".pdf", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
             draw(PNG(directorio_fig*"$año\/png\/"*String(str_trimestre[m])*".png", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
