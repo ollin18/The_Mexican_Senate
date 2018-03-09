@@ -16,13 +16,13 @@ c_in = Array{Int64}(0)
 c_out = Array{Int64}(0)
 
 nombres_partidos = ["pri","prd","pan","independiente","pt","pvem"]
-directorio_data = "../data/"
+directorio_data = "/data/"
 directorio_adj = directorio_data*"adj/"
 directorio_clu = directorio_data*"clustering/"
 directorio_ne = directorio_data*"edges/"
-directorio_fig = "../figs/"
-directorio_pdf = "../figs/pdf/"
-directorio_png = "../figs/png/"
+directorio_fig = "/figs/"
+directorio_pdf = "/figs/pdf/"
+directorio_png = "/figs/png/"
 isdir(directorio_data) || mkdir(directorio_data)
 isdir(directorio_adj) || mkdir(directorio_adj)
 isdir(directorio_adj*"threshold/") || mkdir(directorio_adj*"threshold/")

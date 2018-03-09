@@ -6,6 +6,7 @@ using LightGraphs
 using GraphPlot
 using Colors
 using Compose
+using RCall
 include("utils.jl")
 
 global_clustering = Array{Float64}(0)
@@ -29,13 +30,13 @@ avgk = Array{Float64}(0)
 maxk = Array{Float64}(0)
 
 nombres_partidos = ["pri","prd","pan","independiente","pt","pvem"]
-directorio_data = "../data/"
+directorio_data = "/data/"
 directorio_adj = directorio_data*"adj/"
 directorio_clu = directorio_data*"clustering/"
 directorio_ne = directorio_data*"edges/"
 directorio_k = directorio_data*"k/"
 directorio_maxk = directorio_data*"maxk/"
-directorio_fig = "../figs/"
+directorio_fig = "/figs/"
 isdir(directorio_data) || mkdir(directorio_data)
 isdir(directorio_adj) || mkdir(directorio_adj)
 isdir(directorio_adj*"treshold/") || mkdir(directorio_adj*"treshold/")

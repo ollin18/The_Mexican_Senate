@@ -1,14 +1,20 @@
 #!/usr/bin/env julia
 
+### ============== ### ============== ### ============== ###
+##          Average degree in and out of clusters         ##
+##              Ollin Demian Langle Chimal                ##
+##                    08 / 03 / 2018                      ##
+### ============== ### ============== ### ============== ###
+
 using OhMyREPL
 using Plots
 pyplot()
 
-directorio_data = "../data/"
+directorio_data = "/data/"
 directorio_adj = directorio_data*"adj/"
 directorio_clu = directorio_data*"clustering/"
 directorio_ne = directorio_data*"edges/"
-directorio_fig = "../figs/"
+directorio_fig = "/figs/"
 directorio_fig_plots = directorio_fig*"plots/"
 directorio_ratio = directorio_fig_plots*"ratio/"
 directorio_png = directorio_ratio*"png/"

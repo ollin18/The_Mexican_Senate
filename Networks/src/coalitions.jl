@@ -5,12 +5,12 @@ using LightGraphs
 include("read_graph.jl")
 
 nombres_coaliciones = ["pri_verde","prd_pt","izquierdas","derechas","pan_izquierdas"]
-directorio_data = "../data/"
+directorio_data = "/data/"
 directorio_clu = directorio_data*"clustering/"
 directorio_ne = directorio_data*"edges/"
-senadores = readdlm("../data/los_nombres.csv",',')
+senadores = readdlm("/data/los_nombres.csv",',')
 
-partidos = readdlm("../data/los_partidos.csv",',')
+partidos = readdlm("/data/los_partidos.csv",',')
 cuales = unique(partidos)
 dic_partidos = Dict(i=>cuales[i] for i ∈ 1:6)
 rev_partidos = Dict(cuales[i]=>i for i ∈ 1:6)
