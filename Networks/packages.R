@@ -5,9 +5,7 @@ instalar <- function(paquete) {
     library(paquete, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
   }
 }
-paquetes <- c('dplyr', 'tidyr', 'ggplot2',
+paquetes <- c('curl','devtools','dplyr', 'tidyr', 'ggplot2',
               'reshape2', 'lubridate','plyr')
-packageurl <- "https://cran.r-project.org/src/contrib/Archive/RNeo4j/RNeo4j_1.6.4.tar.gz"
-install.packages(packageurl, contriburl=NULL, type="source")
-
 lapply(paquetes, instalar);
+devtools::install_github("nicolewhite/RNeo4j")

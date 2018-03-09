@@ -4,7 +4,7 @@ RUN apt-get update
 RUN sh -c 'echo "deb http://cran.rstudio.com/bin/linux/debian jessie-cran34/" >> /etc/apt/sources.list'
 RUN apt-get install dirmngr & apt-key adv --keyserver keys.gnupg.net --recv-key 'FCAE2A0E115C3D8A'
 RUN apt-get update && apt-get install -y build-essential ed sed
-RUN apt-get install -y unzip
+RUN apt-get install -y unzip curl openssl libssl-dev libcurl4-openssl-dev git python-pip libfreetype6-dev pkg-config python-dev
 RUN apt-get install --force-yes -y r-base-core r-recommended r-base r-base-dev
 
 ADD packages.R packages.R
@@ -12,8 +12,9 @@ ADD requirements.txt requirements.txt
 ADD packages.sh packages.sh
 
 RUN Rscript packages.R
+RUN pip install matplotlib
 RUN sh packages.sh
 
-COPY src/ src/
+COPY src/ /src/
 
-CMD ["echo", "hola"]
+CMD ["/src/execute.sh"]
