@@ -49,8 +49,8 @@ MATCH (s:Senator), (e:edictum)
 OPTIONAL MATCH (s)-[v:VOTE]->(e)
 WITH s,v,e
 MATCH (d:day)-[]->(e)
-RETURN e.edictumId as Edicto, s.senator as Senador, v.voted as Votó, d.day as día
-ORDER BY día DESC
+RETURN e.edictumId as Edicto, s.senator as Senador, v.voted as Voto, d.day as dia
+ORDER BY dia DESC
 '
 
 votos_orig <- cypher(graph,query)
@@ -66,8 +66,8 @@ votos <- votos_orig[!duplicated(votos_orig),]
 
 votos <- votos[!duplicated(votos[,1:2]),]
 
-votos <- votos %>% spread(Senador,Votó,fill='AUSENTE')
-votos\$día <- votos\$día %>% ymd()
+votos <- votos %>% spread(Senador,Voto,fill='AUSENTE')
+votos\$dia <- votos\$dia %>% ymd()
 """)
 
 reval("""
@@ -83,37 +83,37 @@ cuartotrimestre <- c(10,11,12)
 trimestres = [primertrimestre,segundotrimestre,tercertrimestre,cuartotrimestre]
 str_trimestre = ["primertrimestre","segundotrimestre","tercertrimestre","cuartotrimestre"]
 
-for año ∈ 2012:2018
-    isdir(directorio_fig*"$año") || mkdir(directorio_fig*"$año")
-    isdir(directorio_fig*"$año\/png") || mkdir(directorio_fig*"$año\/png")
-    isdir(directorio_fig*"$año\/pdf") || mkdir(directorio_fig*"$año\/pdf")
-    isdir(directorio_pdf*"$año/") || mkdir(directorio_pdf*"$año/")
-    isdir(directorio_png*"$año/") || mkdir(directorio_png*"$año/")
-    isdir(directorio_clu*"$año/") || mkdir(directorio_clu*"$año/")
+for anio ∈ 2012:2018
+    isdir(directorio_fig*"$anio") || mkdir(directorio_fig*"$anio")
+    isdir(directorio_fig*"$anio\/png") || mkdir(directorio_fig*"$anio\/png")
+    isdir(directorio_fig*"$anio\/pdf") || mkdir(directorio_fig*"$anio\/pdf")
+    isdir(directorio_pdf*"$anio/") || mkdir(directorio_pdf*"$anio/")
+    isdir(directorio_png*"$anio/") || mkdir(directorio_png*"$anio/")
+    isdir(directorio_clu*"$anio/") || mkdir(directorio_clu*"$anio/")
     m = 1
     for u ∈ 1:length(trimestres)
         trimestre = trimestres[u]
         @rput trimestre
         reval("""
-            votos_año <- votos[year(votos\$día)==$año,]
-            votos_día <- subset(votos_año, month(votos\$día) %in% trimestre)
+            votos_anio <- votos[year(votos\$dia)==$anio,]
+            votos_dia <- subset(votos_anio, month(votos\$dia) %in% trimestre)
         """)
 
         reval("""
             votos_num <- votos_orig[!duplicated(votos_orig),]
             votos_num <- votos_num[!duplicated(votos_num[,1:2]),]
-            votos_num\$Votó <- revalue(votos_num\$Votó,c("EN PRO"=1,"EN CONTRA"=-1,
+            votos_num\$Voto <- revalue(votos_num\$Voto,c("EN PRO"=1,"EN CONTRA"=-1,
                                            "AUSENTE"=1, "ABSTENCIÓN"=1))
-            votos_num <- votos_num %>% spread(Senador,Votó,fill='1')
-            votos_num\$día <- votos_num\$día %>% ymd()
-            votos_num_año <- votos_num[year(votos_num\$día)==$año,]
-            votos_num_día <- subset(votos_num_año, month(votos_num\$día) %in% trimestre)
+            votos_num <- votos_num %>% spread(Senador,Voto,fill='1')
+            votos_num\$dia <- votos_num\$dia %>% ymd()
+            votos_num_anio <- votos_num[year(votos_num\$dia)==$anio,]
+            votos_num_dia <- subset(votos_num_anio, month(votos_num\$dia) %in% trimestre)
             """)
 
         reval("part_num <- revalue(partidos\$Partido,c('PRI'=1,'PRD'=2,'PAN'=3,'Independiente'=4,'PT'=5,'PVEM'=6))")
 
         reval("senadores <- c(colnames(votos_num)[3:130])")
-        reval("votos_use <- votos_día[apply(votos_num_día,1, function(row){any(row < 0)}),]")
+        reval("votos_use <- votos_dia[apply(votos_num_dia,1, function(row){any(row < 0)}),]")
         reval("votos_use <- na.omit(votos_use)")
         @rget votos_use
         edictos = map(x->parse(Float64,x),votos_use[:,1])
@@ -156,13 +156,13 @@ for año ∈ 2012:2018
         if ne(g)>0
             NBM, edgeidmap = ollin_matrix(g,matriz_copiada)
             grad = [force(g,i,matriz_copiada) for i in 1:128]
-            threshold = 4*sqrt(mean(grad)/mean(grad.-1)/mean(grad))
+            threshold = 3*sqrt(mean(grad)/mean(grad.-1)/mean(grad))
 
             R = NBM
             valores, vectores = eigens(R,threshold)
             cuantos, index = num_com(valores,threshold)
             if cuantos < 2
-                threshold = 3*sqrt(mean(grad)/mean(grad.-1)/mean(grad))
+                threshold = 2*sqrt(mean(grad)/mean(grad.-1)/mean(grad))
                 valores, vectores = eigens(R,threshold)
                 cuantos, index = num_com(valores,threshold)
             end
@@ -193,9 +193,9 @@ for año ∈ 2012:2018
             el_senador = readdlm("../data/los_nombres.csv",',')
             el_partido = readdlm("../data/los_partidos.csv",',')
             noditos = hcat(el_senador,membership,el_partido)
-            writedlm(directorio_clu*"$año\/"String(str_trimestre[m])*"grupos\_ollin.dat",noditos)
-            draw(PDF(directorio_pdf*"\/$año\/"*String(str_trimestre[m])*"\_ollin.pdf", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
-            draw(PNG(directorio_png*"\/$año\/"*String(str_trimestre[m])*"\_ollin.png", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
+            writedlm(directorio_clu*"$anio\/"String(str_trimestre[m])*"grupos\_ollin.dat",noditos)
+            draw(PDF(directorio_pdf*"\/$anio\/"*String(str_trimestre[m])*"\_ollin.pdf", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
+            draw(PNG(directorio_png*"\/$anio\/"*String(str_trimestre[m])*"\_ollin.png", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
 
             ##### Aquí va la medición de asortatividad
             adentro = Array{Int64}(0)
@@ -218,7 +218,7 @@ for año ∈ 2012:2018
             end
             push!(c_in,sum(adentro))
             push!(c_out,sum(afuera))
-            println(año,",",str_trimestre[m])
+            println(anio,",",str_trimestre[m])
         end
         m += 1
     end

@@ -19,7 +19,7 @@ cp $DATA/edictum.csv $NODEL/edictum.csv
 
 cp $DATA/comissions.csv $EDGEL/comissions.csv
 
-cat $DATA/attendance.csv | awk 'BEGIN{FS="|"}{print$1"|"$2"|"$4"|ATTENDED"}' > $EDGEL/attendance.csv
+cat $DATA/attendance.csv | awk 'BEGIN{FS="|"}{print$1"|"$2"|"$4"|ATTENDED"}' | sed 's/Ó/O/g' > $EDGEL/attendance.csv
 
 awk 'BEGIN {FS="|"}{OFS="|"}{$4="VOTE";print}' $DATA/votes.csv > $EDGEL/votes.csv
 

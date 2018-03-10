@@ -7,3 +7,5 @@ Compose
 Clustering
 Plots
 PyPlot
+Cairo
+Fontconfig

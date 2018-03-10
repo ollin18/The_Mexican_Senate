@@ -61,17 +61,17 @@ reval("""
 graph = startGraph('http://localhost:7474/db/data/', username='neo4j')""")
 
 reval("""
-query = '
+query ='
 MATCH (s:Senator), (e:edictum)
 OPTIONAL MATCH (s)-[v:VOTE]->(e)
 WITH s,v,e
 MATCH (d:day)-[]->(e)
-RETURN e.edictumId as Edicto, s.senator as Senador, v.voted as Votó, d.day as día
-ORDER BY día DESC
-'
-
+RETURN e.edictumId as Edicto, s.senator as Senador, v.voted as Voto, d.day as dia
+ORDER BY dia DESC'
 votos_orig <- cypher(graph,query)
+""")
 
+reval("""
 query2 = '
 MATCH (s:Senator)
 RETURN s.senator as Senador, s.party as Partido
@@ -83,8 +83,8 @@ votos <- votos_orig[!duplicated(votos_orig),]
 
 votos <- votos[!duplicated(votos[,1:2]),]
 
-votos <- votos %>% spread(Senador,Votó,fill='AUSENTE')
-votos\$día <- votos\$día %>% ymd()
+votos <- votos %>% spread(Senador,Voto,fill='AUSENTE')
+votos\$dia <- votos\$dia %>% ymd()
 """)
 
 reval("""
@@ -100,34 +100,34 @@ cuartotrimestre <- c(10,11,12)
 trimestres = [primertrimestre,segundotrimestre,tercertrimestre,cuartotrimestre]
 str_trimestre = ["primertrimestre","segundotrimestre","tercertrimestre","cuartotrimestre"]
 
-for año ∈ 2012:2018
-    isdir(directorio_fig*"$año") || mkdir(directorio_fig*"$año")
-    isdir(directorio_fig*"$año\/png") || mkdir(directorio_fig*"$año\/png")
-    isdir(directorio_fig*"$año\/pdf") || mkdir(directorio_fig*"$año\/pdf")
-    isdir(directorio_adj*"$año") || mkdir(directorio_adj*"$año")
-    isdir(directorio_adj*"$año\/treshold") || mkdir(directorio_adj*"$año\/treshold")
-    isdir(directorio_adj*"$año\/weighted") || mkdir(directorio_adj*"$año\/weighted")
+for anio ∈ 2012:2018
+    isdir(directorio_fig*"$anio") || mkdir(directorio_fig*"$anio")
+    isdir(directorio_fig*"$anio\/png") || mkdir(directorio_fig*"$anio\/png")
+    isdir(directorio_fig*"$anio\/pdf") || mkdir(directorio_fig*"$anio\/pdf")
+    isdir(directorio_adj*"$anio") || mkdir(directorio_adj*"$anio")
+    isdir(directorio_adj*"$anio\/treshold") || mkdir(directorio_adj*"$anio\/treshold")
+    isdir(directorio_adj*"$anio\/weighted") || mkdir(directorio_adj*"$anio\/weighted")
     m = 1
     for trimestre ∈ trimestres
         @rput trimestre
-        reval("votos_año <- votos[year(votos\$día)==$año,]")
-        reval("votos_día <- subset(votos_año, month(votos\$día) %in% trimestre)")
+        reval("votos_anio <- votos[year(votos\$dia)==$anio,]")
+        reval("votos_dia <- subset(votos_anio, month(votos\$dia) %in% trimestre)")
 
         reval("""
             votos_num <- votos_orig[!duplicated(votos_orig),]
             votos_num <- votos_num[!duplicated(votos_num[,1:2]),]
-            votos_num\$Votó <- revalue(votos_num\$Votó,c("EN PRO"=1,"EN CONTRA"=-1,
+            votos_num\$Voto <- revalue(votos_num\$Voto,c("EN PRO"=1,"EN CONTRA"=-1,
                                            "AUSENTE"=1, "ABSTENCIÓN"=1))
-            votos_num <- votos_num %>% spread(Senador,Votó,fill='1')
-            votos_num\$día <- votos_num\$día %>% ymd()
-            votos_num_año <- votos_num[year(votos_num\$día)==$año,]
-            votos_num_día <- subset(votos_num_año, month(votos_num\$día) %in% trimestre)
+            votos_num <- votos_num %>% spread(Senador,Voto,fill='1')
+            votos_num\$dia <- votos_num\$dia %>% ymd()
+            votos_num_anio <- votos_num[year(votos_num\$dia)==$anio,]
+            votos_num_dia <- subset(votos_num_anio, month(votos_num\$dia) %in% trimestre)
             """)
 
         reval("part_num <- revalue(partidos\$Partido,c('PRI'=1,'PRD'=2,'PAN'=3,'Independiente'=4,'PT'=5,'PVEM'=6))")
 
         reval("senadores <- c(colnames(votos_num)[3:130])")
-        reval("votos_use <- votos_día[apply(votos_num_día,1, function(row){any(row < 0)}),]")
+        reval("votos_use <- votos_dia[apply(votos_num_dia,1, function(row){any(row < 0)}),]")
         reval("votos_use <- na.omit(votos_use)")
         @rget votos_use
         edictos = map(x->parse(Float64,x),votos_use[:,1])
@@ -229,11 +229,11 @@ for año ∈ 2012:2018
             membership = partidos_num
             nodecolor = [colorant"red",colorant"yellow",colorant"blue",colorant"violet",colorant"orange",colorant"green"]
             nodefillc =  nodecolor[membership]
-            draw(PDF(directorio_fig*"$año\/pdf\/"*String(str_trimestre[m])*".pdf", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
-            draw(PNG(directorio_fig*"$año\/png\/"*String(str_trimestre[m])*".png", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
-            writedlm(directorio_adj*"$año\/"*"treshold/"*String(str_trimestre[m])*"\_$año.dat",adyacencias,'|')
-            writedlm(directorio_adj*"treshold/"*String(str_trimestre[m])*"\_$año.dat",adyacencias,'|')
-            writedlm(directorio_adj*"$año\/"*"weighted/"*String(str_trimestre[m])*"\_$año.dat",adyacenciasp,'|')
+            draw(PDF(directorio_fig*"$anio\/pdf\/"*String(str_trimestre[m])*".pdf", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
+            draw(PNG(directorio_fig*"$anio\/png\/"*String(str_trimestre[m])*".png", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
+            writedlm(directorio_adj*"$anio\/"*"treshold/"*String(str_trimestre[m])*"\_$anio.dat",adyacencias,'|')
+            writedlm(directorio_adj*"treshold/"*String(str_trimestre[m])*"\_$anio.dat",adyacencias,'|')
+            writedlm(directorio_adj*"$anio\/"*"weighted/"*String(str_trimestre[m])*"\_$anio.dat",adyacenciasp,'|')
         end
         m += 1
     end

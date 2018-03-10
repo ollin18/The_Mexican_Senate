@@ -37,6 +37,7 @@ services:
             context: ../Networks
         image: ollin18/senate_net:0.1
         container_name: senate_net
+        network_mode: "host"
         depends_on:
             - neo4j
         volumes:
