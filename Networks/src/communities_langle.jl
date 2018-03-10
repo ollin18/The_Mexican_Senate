@@ -42,7 +42,7 @@ library(tidyr)
 library(ggplot2)
 library(lubridate)
 
-graph = startGraph('http://localhost:7474/db/data/')
+graph = startGraph('http://localhost:7474/db/data/', username='neo4j')
 
 query = '
 MATCH (s:Senator), (e:edictum)

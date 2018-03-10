@@ -15,6 +15,9 @@ RUN Rscript packages.R
 RUN pip install matplotlib
 RUN sh packages.sh
 
+ADD wait-for-it.sh /
+RUN chmod +x /wait-for-it.sh
+
 COPY src/ /src/
 
 CMD ["/src/execute.sh"]

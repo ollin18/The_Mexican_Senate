@@ -55,9 +55,6 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(lubridate)
-library(e1071)
-library(factoextra)
-library(NbClust)
 """)
 
 reval("""

@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3.5"
 
 services:
     neo4j:
@@ -30,6 +30,31 @@ services:
         volumes:
             - ../Scraping/data:/data
         command: ["src/execute.sh"]
+
+    netw:
+        build:
+            dockerfile: Dockerfile.net
+            context: ../Networks
+        image: ollin18/senate_net:0.1
+        container_name: senate_net
+        depends_on:
+            - neo4j
+        volumes:
+            - ../Networks/data:/data
+            - ../Networks/figs:/figs
+        entrypoint:
+            - /wait-for-it.sh
+            - neo4j:7474
+            - --
+            - sh
+            - /src/execute.sh
+
+#networks:
+  ##need to move default network to a different subnet to avoid conflict with local subnet
+  #default:
+    #ipam:
+      #config:
+        #- subnet: 172.28.0.0/16
 
 volumes:
     data:
