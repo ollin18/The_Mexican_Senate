@@ -8,6 +8,8 @@ using Colors
 using Compose
 using Clustering
 using RCall
+using Plots
+pyplot()
 include("utils.jl")
 include("matrices.jl")
 
@@ -23,6 +25,7 @@ directorio_ne = directorio_data*"edges/"
 directorio_fig = "/figs/"
 directorio_pdf = "/figs/pdf/"
 directorio_png = "/figs/png/"
+directorio_val = "/figs/eig/"
 isdir(directorio_data) || mkdir(directorio_data)
 isdir(directorio_adj) || mkdir(directorio_adj)
 isdir(directorio_adj*"threshold/") || mkdir(directorio_adj*"threshold/")
@@ -32,6 +35,7 @@ isdir(directorio_ne) || mkdir(directorio_ne)
 isdir(directorio_fig) || mkdir(directorio_fig)
 isdir(directorio_pdf) || mkdir(directorio_pdf)
 isdir(directorio_png) || mkdir(directorio_png)
+isdir(directorio_val) || mkdir(directorio_val)
 
 reval("""
 library(RNeo4j)
@@ -156,7 +160,21 @@ for anio ∈ 2012:2018
         if ne(g)>0
             NBM, edgeidmap = ollin_matrix(g,matriz_copiada)
             grad = [force(g,i,matriz_copiada) for i in 1:128]
-            threshold = 3*sqrt(mean(grad)/mean(grad.-1)/mean(grad))
+            #threshold = 3*sqrt(mean(grad)/mean(grad.-1)/mean(grad))
+
+            the_values = eigvals(NBM)
+            the_real = real.(the_values)
+            the_imag = imag.(the_values)
+            the_norm = sqrt.((the_real.^2)+(the_imag.^2))
+            both = hcat(the_imag,the_norm)
+            sorted = sortrows(both, by=x->(x[2]),rev=true)
+            threshold = 0
+            for i in 1:size(sorted)[1]
+                if sorted[i,1] != 0
+                    threshold = sorted[i,2]
+                    break
+                end
+            end
 
             R = NBM
             valores, vectores = eigens(R,threshold)
@@ -219,6 +237,18 @@ for anio ∈ 2012:2018
             push!(c_in,sum(adentro))
             push!(c_out,sum(afuera))
             println(anio,",",str_trimestre[m])
+
+            scatter(the_real,the_imag,title="Eigenvalues of weighted NBM on complex plane")
+            θ = 0:π/50:4π
+
+            r = threshold
+            the_x = r*cos.(θ)
+            the_y = r*sin.(θ)
+            plot!(the_x,the_y,lab="Threshold")
+            xlabel!("Real")
+            ylabel!("Imaginary")
+
+            savefig(directorio_val*"$anio\_"*String(str_trimestre[m])*"\_eigval_in_complex.png")
         end
         m += 1
     end
