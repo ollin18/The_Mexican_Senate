@@ -238,7 +238,7 @@ for anio ∈ 2012:2018
             push!(c_out,sum(afuera))
             println(anio,",",str_trimestre[m])
 
-            scatter(the_real,the_imag,title="Eigenvalues of weighted NBM on complex plane")
+            scatter(the_real,the_imag,title="Eigenvalues of weighted NBM on complex plane",aspect_ratio=1)
             θ = 0:π/50:4π
 
             r = threshold
