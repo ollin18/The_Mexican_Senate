@@ -1,6 +1,19 @@
 # The_Mexican_Senate
 Repo for data adquisition, database creation and network analysis of the Mexican Senate.
 
+In this branch we only have two dependencies, *docker* and *docker-compose*.
+In order to run the pipeline you have to be under the **Infrastructure** directory and run:
+```
+docker-compose up
+```
+The docker containers will be build and run in dependency order, be patient it may take a while.
+
+If for any reason the network analysis didn't do what it was supposed to just run the single container from
+the root directory of this repo.
+```
+docker run -v $(pwd)/data/:/data/ -v $(pwd)/figs/:/figs/ --net=host ollin18/senate_net:0.1
+```
+
 For a visualization of the dynamics of the Senate's network follow:
 [![Dynamics](https://img.youtube.com/vi/3Yi6x6CwxPg/0.jpg)](https://www.youtube.com/watch?v=3Yi6x6CwxPg)
 
