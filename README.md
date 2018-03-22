@@ -9,7 +9,7 @@ docker-compose up
 The docker containers will be build and run in dependency order, be patient it may take a while.
 
 If for any reason the network analysis didn't do what it was supposed to just run the single container from
-the root directory of this repo.
+the Network directory of this repo.
 ```
 docker run -v $(pwd)/data/:/data/ -v $(pwd)/figs/:/figs/ --net=host ollin18/senate_net:0.1
 ```
