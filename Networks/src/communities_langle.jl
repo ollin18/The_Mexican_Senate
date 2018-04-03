@@ -160,7 +160,7 @@ for anio ∈ 2012:2018
         if ne(g)>0
             NBM, edgeidmap = ollin_matrix(g,matriz_copiada)
             grad = [force(g,i,matriz_copiada) for i in 1:128]
-            #threshold = 3*sqrt(mean(grad)/mean(grad.-1)/mean(grad))
+            threshold = 2*sqrt(mean(grad)/mean(grad.-1)/mean(grad))
 
             the_values = eigvals(NBM)
             the_real = real.(the_values)
@@ -168,13 +168,13 @@ for anio ∈ 2012:2018
             the_norm = sqrt.((the_real.^2)+(the_imag.^2))
             both = hcat(the_imag,the_norm)
             sorted = sortrows(both, by=x->(x[2]),rev=true)
-            threshold = 0
-            for i in 1:size(sorted)[1]
-                if sorted[i,1] != 0
-                    threshold = sorted[i,2]
-                    break
-                end
-            end
+            #threshold = 0
+            #for i in 1:size(sorted)[1]
+                #if sorted[i,1] != 0
+                    #threshold = sorted[i,2]
+                    #break
+                #end
+            #end
 
             R = NBM
             valores, vectores = eigens(R,threshold)
