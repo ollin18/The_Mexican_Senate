@@ -164,8 +164,8 @@ function senators_attendance(id::Int64)
     the_dic = Dict(the_array[i,2]=>the_array[i,1] for i in 1:size(the_array)[1])
     h = get_info_at(id)
     ref = matchall(Selector("tr td div a[href^='index.php?watch=35']"),h.root)
-    ref = ref[2:end]
-    att = matchall(Selector("tr td div strong"),h.root)[7:end]
+    ref = ref[10:end]
+    att = matchall(Selector("tr td div strong"),h.root)[13:end]
     mid, mda = giveme_dates(ref)
     mas = giveme_attendance(att)
     if id < 640
@@ -240,7 +240,7 @@ end
 
 function giveme_the_date(edictum::Int64)
     h = get_info_day(edictum)
-    date = nodeText(matchall(Selector("tr td div strong"),h.root)[1])
+    date = nodeText(matchall(Selector("tr td div strong"),h.root)[7])
     info = nodeText(matchall(Selector("tr td div"),h.root)[end])
     day = match(the_day,date).match
     month = dic_month[match(the_month,date).match[4:end-3]]
