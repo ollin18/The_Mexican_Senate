@@ -224,10 +224,9 @@ function senators_votes(id::Int64)
     h = get_info_vote(id)
     votes = matchall(Selector("td[width='10%'] div[align ='center']"),h.root)
     law = matchall(Selector("tr td div a[href^='index.php?watch=36']"),h.root)
-    law = law[2:end]
+    law = law[9:2:end]
     the_vote = giveme_the_vote(votes)
     lid = giveme_law_id(law)
-    lid = lid[1:2:end]
     if id < 640
         for voting in eachindex(lid)
             println(id, "|", lid[voting], "|", the_vote[voting])
