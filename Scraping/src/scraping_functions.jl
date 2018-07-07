@@ -2,7 +2,8 @@ using Gumbo
 using Cascadia
 using Requests
 
-export names_and_representations, senators_attendance, alternate_and_titular, senators_votes
+export names_and_representations, senators_attendance, alternate_and_titular,
+senators_votes, senators_and_alternates
 
 num_month = ["01","02","03","04","05","06","07","08","09","10","11","12"]
 month = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre", "diciembre"]
@@ -53,7 +54,8 @@ end
 
 function giveme_party(element::Array{Gumbo.HTMLNode,1})
     delete_route = r"os\/.*[^(?:png)]"
-    with_route = element[7].attributes["src"]
+    the_length = length(element)
+    with_route = element[the_length].attributes["src"]
     if match(delete_route, with_route) != nothing
         party_only = match(delete_route, with_route)
         uppercase(party_only.match[4:end-1])
