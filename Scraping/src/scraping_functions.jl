@@ -55,7 +55,11 @@ end
 function giveme_party(element::Array{Gumbo.HTMLNode,1})
     delete_route = r"os\/.*[^(?:png)]"
     the_length = length(element)
-    with_route = element[the_length].attributes["src"]
+    try
+        global with_route = element[7].attributes["src"]
+    catch
+        global with_route = element[6].attributes["src"]
+    end
     if match(delete_route, with_route) != nothing
         party_only = match(delete_route, with_route)
         uppercase(party_only.match[4:end-1])
