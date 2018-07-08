@@ -1,9 +1,14 @@
+#!/usr/bin/env julia
 function kron_δ(i,j)
     if i == j
         return 1
     else
         return 0
     end
+end
+
+function harmean(i,j)
+    2 / ((1/i)+(1/j))
 end
 
 function inv_degree(g,i)

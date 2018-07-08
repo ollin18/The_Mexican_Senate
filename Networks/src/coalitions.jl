@@ -30,6 +30,12 @@ for partido ∈ [:pri_verde_out,:prd_pt_out,:izquierdas_out,:derechas_out,:pan_i
     @eval $partido = Array{Int64}(0)
     push!(afuera,@eval $partido)
 end
+modularidad = Array{Array}(0)
+for partido ∈ [:pri_verde_out,:prd_pt_out,:izquierdas_out,:derechas_out,:pan_izquierdas_out]
+    @eval $partido = Array{Float64}(0)
+    push!(modularidad,@eval $partido)
+end
+
 los_cluster = Array{Array}(0)
 for coalicion ∈ [:pri_verde_cl,:prd_pt_cl,:izquierdas_cl,:derechas_cl,:pan_izquierdas_cl]
     @eval $coalicion = Array{Float64}(0)
@@ -64,6 +70,14 @@ g,no,dino = lectura(mes)
         globne = ne(subred)
         push!(adentro[i],globne)
         push!(afuera[i],(ne(g)-globne-ne(red_complemento)))
+
+        ### Modularidad
+        Lc = globne
+        L = ne(g)
+        grados = [degree(subred,i) for i in vertices(subred)]
+        modu = (Lc/L)-(sum(grados)/(2L))^2
+        push!(modularidad[i],modu)
+
     end
 end
 
@@ -72,5 +86,6 @@ for partido ∈ nombres_coaliciones
     writedlm(directorio_clu*"$partido\_cc.csv",los_cluster[n],',')
     writedlm(directorio_ne*"$partido\_in.csv",adentro[n],',')
     writedlm(directorio_ne*"$partido\_out.csv",afuera[n],',')
+    writedlm(directorio_clu*"$partido\_modularity.csv",modularidad[n],',')
     n += 1
 end

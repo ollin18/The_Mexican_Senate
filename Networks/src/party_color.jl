@@ -26,6 +26,13 @@ for partido ∈ [:pri_out,:prd_out,:pan_out,:independiente_out,:pt_out,:pvem_out
     @eval $partido = Array{Int64}(0)
     push!(afuera,@eval $partido)
 end
+modularidad = Array{Array}(0)
+for partido ∈ [:pri_out,:prd_out,:pan_out,:independiente_out,:pt_out,:pvem_out]
+    @eval $partido = Array{Float64}(0)
+    push!(modularidad,@eval $partido)
+end
+
+
 avgk = Array{Float64}(0)
 maxk = Array{Float64}(0)
 
@@ -221,6 +228,13 @@ for anio ∈ 2012:2018
                 globne = ne(subred)
                 push!(los_ne[i],globne)
                 push!(afuera[i],(ne(g)-globne-ne(red_complemento)))
+
+
+                Lc = globne
+                L = ne(g)
+                vec_grados = [degree(subred,i) for i in vertices(subred)]
+                modu = (Lc/L)-(sum(vec_grados)/(2L))^2
+                push!(modularidad[i],modu)
             end
             promedio = avg_grados(g)
             maximok = max_grados(g)
@@ -241,6 +255,7 @@ end
 n = 1
 for partido ∈ nombres_partidos
     writedlm(directorio_clu*"$partido\_cc.csv",los_cluster[n],',')
+    writedlm(directorio_clu*"$partido\_modularity.csv",modularidad[n],',')
     writedlm(directorio_ne*"$partido\_in.csv",los_ne[n],',')
     writedlm(directorio_ne*"$partido\_out.csv",afuera[n],',')
     n += 1

@@ -51,6 +51,20 @@ derechas_out = readdlm(directorio_ne*"derechas_out.csv")
 pan_izquierdas_out = readdlm(directorio_ne*"pan_izquierdas_out.csv")
 langle_out = readdlm(directorio_ne*"langle_out.csv")
 
+pri_modularity = readdlm(directorio_clu*"pri_modularity.csv")
+prd_modularity = readdlm(directorio_clu*"prd_modularity.csv")
+pan_modularity = readdlm(directorio_clu*"pan_modularity.csv")
+independiente_modularity = readdlm(directorio_clu*"independiente_modularity.csv")
+pt_modularity = readdlm(directorio_clu*"pt_modularity.csv")
+pvem_modularity = readdlm(directorio_clu*"pvem_modularity.csv")
+pri_pvem_modularity = readdlm(directorio_clu*"pri_verde_modularity.csv")
+prd_pt_modularity = readdlm(directorio_clu*"prd_pt_modularity.csv")
+izquierdas_modularity = readdlm(directorio_clu*"izquierdas_modularity.csv")
+derechas_modularity = readdlm(directorio_clu*"derechas_modularity.csv")
+pan_izquierdas_modularity = readdlm(directorio_clu*"pan_izquierdas_modularity.csv")
+langle_modularity = readdlm(directorio_clu*"langle_modularity.csv")
+
+
 partido_in = [pri_in,prd_in,pan_in,independiente_in,pt_in,pvem_in]
 partido_out = [pri_out,prd_out,pan_out,independiente_out,pt_out,pvem_out]
 los_partidos = ["PRI","PRD","PAN","IND","PT","PVEM"]
@@ -88,7 +102,11 @@ end
 
 all_parties=union(pri_in./pri_out,prd_in./prd_out,pan_in./pan_out,independiente_in./independiente_out,pt_in./pt_out,pvem_in./pvem_out)
 bounds=extrema(all_parties)
-plot(x,pri_in./pri_out,lab="PRI",c=:red,xaxis=("Time (trimester)"),yaxis=("Ratio in/out",bounds,linspace(bounds[1],bounds[2],20)))
+bounds = map(x->round(x,2),bounds)
+sequence = linspace(bounds[1],bounds[2],20)
+sequence = map(x->trunc(x,3),sequence)
+plot(x,pri_in./pri_out,lab="PRI",c=:red,xaxis=("Time
+(trimester)"),yaxis=("Ratio in/out",bounds,sequence))
 plot!(x,prd_in./prd_out,lab="PRD",c=:yellow)
 plot!(x,pan_in./pan_out,lab="PAN",c=:blue)
 plot!(x,independiente_in./independiente_out,lab="IND",c=:violet)
@@ -98,11 +116,15 @@ title!("in/out edges ratio")
 savefig(directorio_png*"todos\_ratio.png")
 savefig(directorio_pdf*"todos\_ratio.pdf")
 
-ratio = derechas_in ./ derechas_out
+ratio = izquierdas_in ./ izquierdas_out
 bounds = (0,maximum(ratio))
-plot(x,derechas_in./derechas_out,lab="Derechas",c=:red,xaxis=("Time (trimester)"),yaxis=("Ratio in/out",bounds,linspace(bounds[1],bounds[2],20)))
-plot!(x,pri_pvem_in./pri_pvem_out,lab="PRI-PVEM",c=:green)
+bounds = map(x->round(x,2),bounds)
+sequence = linspace(bounds[1],bounds[2],20)
+sequence = map(x->trunc(x,3),sequence)
+plot(x,derechas_in./derechas_out,lab="Derechas",c=:red,xaxis=("Time
+(trimester)"),yaxis=("Ratio in/out",bounds,sequence))
 plot!(x,prd_pt_in./prd_pt_out,lab="PRD-PT",c=:yellow)
+plot!(x,pri_pvem_in./pri_pvem_out,lab="PRI-PVEM",c=:green)
 plot!(x,izquierdas_in./izquierdas_out,lab="Izquierdas",c=:black)
 plot!(x,pan_izquierdas_in./pan_izquierdas_out,lab="PAN-Izquierdas",c=:blue)
 title!("in/out edges ratio coalitions")
@@ -118,7 +140,10 @@ c = (c_in+c_out)/2 # grado promedio
 threshold = 2*sqrt.(c)
 all_values = union(c_in-c_out,threshold)
 bounds=(minimum(all_values),maximum(all_values))
-plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time (trimester)"),yaxis=("Assortativity",bounds,bounds[1]:200:bounds[2]))
+bounds = map(x->round(x,2),bounds)
+
+plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time
+(trimester)"),yaxis=("c_in-c_out",bounds,bounds[1]:200:bounds[2]))
 plot!(x,c_in-c_out,lab="c_in-c_out",c=:blue)
 title!("Assortativity by party")
 savefig(directorio_png*"assortativity_party.png")
@@ -132,7 +157,12 @@ c = (c_in+c_out)/2 # grado promedio
 threshold = 2*sqrt.(c)
 all_values = union(c_in-c_out,threshold)
 bounds=(minimum(all_values),maximum(all_values))
-plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time (trimester)"),yaxis=("Assortativity",bounds,linspace(bounds[1],bounds[2],20)))
+bounds = map(x->round(x,2),bounds)
+
+sequence = linspace(bounds[1],bounds[2],20)
+sequence = map(x->trunc(x,3),sequence)
+plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time
+(trimester)"),yaxis=("c_in-c_out",bounds,sequence))
 plot!(x,c_in-c_out,lab="c_in-c_out",c=:blue)
 title!("Assortativity by right-left")
 savefig(directorio_png*"assortativity_right-left.png")
@@ -146,7 +176,12 @@ c = (c_in+c_out)/2 # grado promedio
 threshold = 2*sqrt.(c)
 all_values = union(c_in-c_out,threshold)
 bounds=(minimum(all_values),maximum(all_values))
-plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time (trimester)"),yaxis=("Assortativity",bounds,linspace(bounds[1],bounds[2],20)))
+bounds = map(x->round(x,2),bounds)
+
+sequence = linspace(bounds[1],bounds[2],20)
+sequence = map(x->trunc(x,3),sequence)
+plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time
+(trimester)"),yaxis=("c_in-c_out",bounds,sequence))
 plot!(x,c_in-c_out,lab="c_in-c_out",c=:blue)
 title!("Assortativity by PRI/PVEM-PAN-Left")
 savefig(directorio_png*"assortativity_pripvem-pan-izq.png")
@@ -160,7 +195,12 @@ c = (c_in+c_out)/2 # grado promedio
 threshold = 2*sqrt.(c)
 all_values = union(c_in-c_out,threshold)
 bounds=(minimum(all_values),maximum(all_values))
-plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time (trimester)"),yaxis=("Assortativity",bounds,linspace(bounds[1],bounds[2],20)))
+bounds = map(x->round(x,2),bounds)
+sequence = linspace(bounds[1],bounds[2],20)
+sequence = map(x->trunc(x,3),sequence)
+
+plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time
+(trimester)"),yaxis=("c_in-c_out",bounds,sequence))
 plot!(x,c_in-c_out,lab="c_in-c_out",c=:blue)
 title!("Assortativity by PRI/PVEM-PAN/Left")
 savefig(directorio_png*"assortativity_pripvem-panizq.png")
@@ -174,7 +214,12 @@ c = (c_in+c_out)/2 # grado promedio
 threshold = 2*sqrt.(c)
 all_values = union(c_in-c_out,threshold)
 bounds=(minimum(all_values),maximum(all_values))
-plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time (trimester)"),yaxis=("Assortativity",bounds,linspace(bounds[1],bounds[2],20)))
+bounds = map(x->round(x,2),bounds)
+sequence = linspace(bounds[1],bounds[2],20)
+sequence = map(x->trunc(x,3),sequence)
+
+plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time
+(trimester)"),yaxis=("c_in-c_out",bounds,sequence))
 plot!(x,c_in-c_out,lab="c_in-c_out",c=:blue)
 title!("Assortativity by communities")
 savefig(directorio_png*"assortativity_langle.png")
@@ -190,9 +235,66 @@ wings_out = derechas_out + izquierdas_out
 threshold = 2*sqrt.(c)
 all_values = union(c_in-c_out,threshold)
 bounds=(minimum(all_values),maximum(all_values))
-plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time (trimester)"),yaxis=("Assortativity",bounds,linspace(bounds[1],bounds[2],20)))
+bounds = map(x->round(x,2),bounds)
+sequence = linspace(bounds[1],bounds[2],20)
+sequence = map(x->trunc(x,3),sequence)
+plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time
+(trimester)"),yaxis=("c_in-c_out",bounds,sequence))
 plot!(x,c_in-c_out,lab="c_in-c_out (Communities)",c=:blue)
 plot!(x,wings_in-wings_out,lab="c_in-c_out(Left-Right)",c=:olive)
 title!("Assortativity Communities vs Left-Right wings")
 savefig(directorio_png*"assortativity_communities_rl.png")
 savefig(directorio_pdf*"assortativity_communities_rl.pdf")
+
+
+#### Communities detectability threshold coalitions PAN-left
+
+c_in = langle_in
+c_out = langle_out
+c = (c_in+c_out)/2 # grado promedio
+wings_in = pri_pvem_in + pan_izquierdas_in
+wings_out = pri_pvem_out + pan_izquierdas_out
+threshold = 2*sqrt.(c)
+all_values = union(c_in-c_out,threshold)
+bounds=(minimum(all_values),maximum(all_values))
+bounds = map(x->round(x,2),bounds)
+sequence = linspace(bounds[1],bounds[2],20)
+sequence = map(x->trunc(x,3),sequence)
+plot(x,threshold,lab="2√<k>",c=:red,xaxis=("Time
+(trimester)"),yaxis=("c_in-c_out",bounds,sequence))
+plot!(x,c_in-c_out,lab="c_in-c_out (Communities)",c=:blue)
+plot!(x,wings_in-wings_out,lab="c_in-c_out(Left-Right)",c=:olive)
+title!("Assortativity Communities vs PRI/PVEM-PAN/Left wings")
+savefig(directorio_png*"assortativity_communities_panleft.png")
+savefig(directorio_pdf*"assortativity_communities_panleft.pdf")
+
+wings_in = pri_pvem_in + pan_izquierdas_in
+wings_out = pri_pvem_out + pan_izquierdas_out
+
+### Modularity langle
+wings = derechas_modularity+izquierdas_modularity
+all_values = union(langle_modularity,wings)
+bounds=(minimum(all_values),maximum(all_values))
+sequence = linspace(bounds[1],bounds[2],20)
+sequence = map(x->trunc(x,3),sequence)
+plot(x,langle_modularity,lab="Modularity (Communities)",c=:blue, xaxis=("Time
+(trimester)"),yaxis=("Modularity",bounds,sequence))
+plot!(x,wings,lab="Modularity (Left-Right)",c=:olive)
+title!("Modularity Communities vs Left-Right wings")
+savefig(directorio_png*"modularity_communities_rl.png")
+savefig(directorio_pdf*"modularity_communities_rl.pdf")
+
+
+
+### Modularity langle
+wings = pri_pvem_modularity+pan_izquierdas_modularity
+all_values = union(langle_modularity,wings)
+bounds=(minimum(all_values),maximum(all_values))
+sequence = linspace(bounds[1],bounds[2],20)
+sequence = map(x->trunc(x,3),sequence)
+plot(x,langle_modularity,lab="Modularity (Communities)",c=:blue, xaxis=("Time
+(trimester)"),yaxis=("Modularity",bounds,sequence))
+plot!(x,wings,lab="Modularity (PRI/PVEM-PAN/Left)",c=:olive)
+title!("Modularity Communities vs PRI/PVEM-PAN/Left")
+savefig(directorio_png*"modularity_communities_panleft.png")
+savefig(directorio_pdf*"modularity_communities_panleft.pdf")

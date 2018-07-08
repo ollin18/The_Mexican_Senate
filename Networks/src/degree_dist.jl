@@ -15,10 +15,15 @@ end
 gif(eigenvalores,"/figs/animacion_valores.gif",fps=5)
 
 erdos = @animate for mes ∈ 1:20
+    randy=rand()
     g = erdos_renyi(128,rand())
     A = adjacency_matrix(g)
     the_val = eigvals(full(A))
     histogram(the_val,nbins=100)
+    plot!(lab="λ",xaxis=("Eigenvalue"),yaxis=("Counts"))
+    title!("Eigenvalue histogram for an Erdős–Rényi graph")
+    savefig("~/Documentos/Tesis_ITAM/La_Tesis/Capitulo4/figs/Graficas/eigerdos.png")
+
 end
 gif(erdos,"/figs/eigv_erdos.gif",fps=5)
 

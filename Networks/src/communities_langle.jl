@@ -16,6 +16,7 @@ include("matrices.jl")
 R_kmeans = R"kmeans";
 c_in = Array{Int64}(0)
 c_out = Array{Int64}(0)
+mod_anual = Array{Float64}(0)
 
 nombres_partidos = ["pri","prd","pan","independiente","pt","pvem"]
 directorio_data = "/data/"
@@ -74,18 +75,22 @@ votos <- votos %>% spread(Senador,Voto,fill='AUSENTE')
 votos\$dia <- votos\$dia %>% ymd()
 """)
 
+#  reval("""
+#  primertrimestre <- c(1,2,3)
+#  segundotrimestre <- c(4,5,6)
+#  tercertrimestre <- c(7,8,9)
+#  cuartotrimestre <- c(10,11,12)
+#  """)
 reval("""
-primertrimestre <- c(1,2,3)
-segundotrimestre <- c(4,5,6)
-tercertrimestre <- c(7,8,9)
-cuartotrimestre <- c(10,11,12)
+primersemestre <- c(1,2,3,4,5,6)
+segundosemestre <- c(7,8,9,10,11,12)
 """)
-@rget primertrimestre
-@rget segundotrimestre
-@rget tercertrimestre
-@rget cuartotrimestre
-trimestres = [primertrimestre,segundotrimestre,tercertrimestre,cuartotrimestre]
-str_trimestre = ["primertrimestre","segundotrimestre","tercertrimestre","cuartotrimestre"]
+
+@rget primersemestre
+@rget segundosemestre
+#  trimestres = [primertrimestre,segundotrimestre,tercertrimestre,cuartotrimestre]
+semestres = [primersemestre,segundosemestre]
+str_semestre = ["primersemestre","segundosemestre"]
 
 for anio ∈ 2012:2018
     isdir(directorio_fig*"$anio") || mkdir(directorio_fig*"$anio")
@@ -95,9 +100,9 @@ for anio ∈ 2012:2018
     isdir(directorio_png*"$anio/") || mkdir(directorio_png*"$anio/")
     isdir(directorio_clu*"$anio/") || mkdir(directorio_clu*"$anio/")
     m = 1
-    for u ∈ 1:length(trimestres)
-        trimestre = trimestres[u]
-        @rput trimestre
+    for u ∈ 1:length(semestres)
+        semestre = semestre[u]
+        @rput semestre
         reval("""
             votos_anio <- votos[year(votos\$dia)==$anio,]
             votos_dia <- subset(votos_anio, month(votos\$dia) %in% trimestre)
@@ -211,13 +216,14 @@ for anio ∈ 2012:2018
             el_senador = readdlm("../data/los_nombres.csv",',')
             el_partido = readdlm("../data/los_partidos.csv",',')
             noditos = hcat(el_senador,membership,el_partido)
-            writedlm(directorio_clu*"$anio\/"String(str_trimestre[m])*"grupos\_ollin.dat",noditos)
-            draw(PDF(directorio_pdf*"\/$anio\/"*String(str_trimestre[m])*"\_ollin.pdf", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
-            draw(PNG(directorio_png*"\/$anio\/"*String(str_trimestre[m])*"\_ollin.png", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
+            writedlm(directorio_clu*"$anio\/"String(str_semestre[m])*"grupos\_ollin.dat",noditos)
+            draw(PDF(directorio_pdf*"\/$anio\/"*String(str_semestre[m])*"\_ollin.pdf", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
+            draw(PNG(directorio_png*"\/$anio\/"*String(str_semestre[m])*"\_ollin.png", 16cm, 16cm), gplot(g,nodefillc=nodefillc,layout=spring_layout))
 
             ##### Aquí va la medición de asortatividad
             adentro = Array{Int64}(0)
             afuera = Array{Int64}(0)
+            modularidad = Array{Float64}(0)
             for i ∈ 1:maximum(membership)
                 the_group = Array{Int64}(0)
                 for j ∈ eachindex(membership)
@@ -228,17 +234,32 @@ for anio ∈ 2012:2018
                 subred = induced_subgraph(g,the_group)[1]
                 complemento = setdiff(collect(1:128),the_group)
                 red_complemento = induced_subgraph(g,complemento)[1]
-                ##globclus = global_clustering_coefficient(subred)
-                ##push!(los_cluster[i],globclus)
                 globne = ne(subred)
                 push!(adentro,globne)
                 push!(afuera,(ne(g)-globne-ne(red_complemento)))
+
+                ### Modularidad
+                Lc = globne
+                L = ne(g)
+                vec_grados = [degree(subred,i) for i in vertices(subred)]
+                modu = (Lc/L)-(sum(vec_grados)/(2L))^2
+                push!(modularidad,modu)
+
+
+                ##globclus = global_clustering_coefficient(subred)
+                ##push!(los_cluster[i],globclus)
             end
             push!(c_in,sum(adentro))
             push!(c_out,sum(afuera))
-            println(anio,",",str_trimestre[m])
+            println(anio,",",str_semestre[m])
 
-            scatter(the_real,the_imag,title="Eigenvalues of weighted NBM on complex plane",aspect_ratio=1)
+            Mc = sum(modularidad)
+            push!(mod_anual,Mc)
+
+
+
+            scatter(the_real,the_imag,title="Eigenvalues of weighted NBM on
+            complex plane "* dec(u) * " trimester of $anio",aspect_ratio=1)
             θ = 0:π/50:4π
 
             r = threshold
@@ -248,7 +269,7 @@ for anio ∈ 2012:2018
             xlabel!("Real")
             ylabel!("Imaginary")
 
-            savefig(directorio_val*"$anio\_"*String(str_trimestre[m])*"\_eigval_in_complex.png")
+            savefig(directorio_val*"$anio\_"*String(str_semestre[m])*"\_eigval_in_complex.png")
         end
         m += 1
     end
@@ -256,3 +277,4 @@ end
 
 writedlm(directorio_ne*"langle\_in.csv",c_in,',')
 writedlm(directorio_ne*"langle\_out.csv",c_out,',')
+writedlm(directorio_clu*"langle\_modularity.csv",mod_anual,',')

@@ -1,3 +1,4 @@
+#!/usr/bin/env julia
 function NB_matrix(g)
 	A = full(adjacency_matrix(g))
     ceros = zeros(A)
@@ -84,6 +85,11 @@ function ollin_matrix(g,v)
         eles = neighbors(g,j)
         k = j
         for l in eles
+            #  B[edgeidmap[Edge(k,l)],u] =
+            #  (kron_δ(j,k)*(1-kron_δ(i,l))) * harmean(v[i,j],v[k,l])*(inv_degree_ollin(g,l,v)) + rel_single(g,j)* inv_degree_ollin(g,j,v)
+            #  (kron_δ(j,k)*(1-kron_δ(i,l)))*((2/(1/v[i,j]+1/v[k,l]))*(inv_degree_ollin(g,l,v)))
+            #  (kron_δ(j,k)*(1-kron_δ(i,l)))* harmean(v[i,j],v[k,l])*(inv_degree_ollin(g,l,v)) + inv_degree_ollin(g,j,v)
+
             B[edgeidmap[Edge(k,l)],u] = (kron_δ(j,k)*(1-kron_δ(i,l)) )*(2/(1/v[i,j]+1/v[k,l]))*(inv_degree(g,l)) + rel_single(g,k)*inv_degree(g,j)
         end
     end
