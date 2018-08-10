@@ -12,7 +12,7 @@ ADD requirements.txt requirements.txt
 ADD packages.sh packages.sh
 
 RUN Rscript packages.R
-RUN pip install matplotlib
+RUN pip install matplotlib luigi
 RUN sh packages.sh
 
 RUN echo 'es_MX.UTF-8 UTF-8' >> /etc/locale.gen
