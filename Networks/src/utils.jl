@@ -36,7 +36,7 @@ function rel_single(g,i)
     end
 end
 
-function global_clustering_coefficient(g::AbstractGraph)
+function mglobal_clustering_coefficient(g::AbstractGraph)
     c = 0
     ntriangles = 0
     for v in vertices(g)
@@ -194,4 +194,85 @@ function membresia(n,v)
         end
     end
     membresia
+end
+
+function opinion(g)
+    opiniones = ones(nv(g))
+    opiniones = [opiniones[i] * rand([-1 ,1]) for i in 1:length(opiniones)]
+    convert(Array{Int64},opiniones)
+end
+
+function probabilidad(p)
+    if rand() <= p
+        return 1
+    else
+        return -1
+    end
+end
+
+function voter_model(g)
+    av_op=Array{Float64}(undef,0)
+    op = opinion(g)
+    while abs(sum(op)/length(op))!=1
+        push!(av_op,sum(op)/length(op))
+        seleccionado = rand(collect(1:nv(g)))
+        opinion_seleccionado = op[seleccionado]
+        vecinos = neighbors(g, seleccionado)
+        vecino_sel = rand(vecinos)
+        op[seleccionado] = op[vecino_sel]
+    end
+    the_time = length(av_op)
+end
+
+function sznajd_one(g)
+    av_op=Array{Float64}(undef,0)
+    op = opinion(g)
+    while abs(sum(op)/length(op))!=1
+        push!(av_op,sum(op)/length(op))
+        seleccionado = rand(collect(1:nv(g)))
+        opinion_seleccionado = op[seleccionado]
+        vecinos = neighbors(g, seleccionado)
+        op[vecinos] .= opinion_seleccionado
+    end
+    the_time = length(av_op)
+end
+
+function sznajd_two(g)
+    av_op=Array{Float64}(undef,0)
+    op = opinion(g)
+    while abs(sum(op)/length(op))!=1
+        push!(av_op,sum(op)/length(op))
+        seleccionado = rand(collect(1:nv(g)))
+        opinion_seleccionado = op[seleccionado]
+        vecinos = neighbors(g, seleccionado)
+        opinion_vecino = op[rand(vecinos)]
+        if opinion_seleccionado == opinion_vecino
+            op[vecinos] .= opinion_seleccionado
+        end
+    end
+    the_time = length(av_op)
+end
+
+function sznajd_three(g)
+    av_op=Array{Float64}(undef,0)
+    op = opinion(g)
+    while abs(sum(op)/length(op))!=1
+        push!(av_op,sum(op)/length(op))
+        seleccionado = rand(collect(1:nv(g)))
+        opinion_seleccionado = op[seleccionado]
+        vecinos = neighbors(g, seleccionado)
+        vecino1 = rand(vecinos)
+        vecino2 = rand(vecinos)
+        if vecino1 == vecino2
+            while vecino1 == vecino2
+                vecino2 = rand(vecinos)
+            end
+        end
+        opinion_vecino1 = op[vecino1]
+        opinion_vecino2 = op[vecino2]
+        if opinion_seleccionado == opinion_vecino1 == opinion_vecino2
+            op[vecinos] .= opinion_seleccionado
+        end
+    end
+    the_time = length(av_op)
 end
